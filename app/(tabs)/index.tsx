@@ -1,17 +1,19 @@
 import React, { useState, useEffect } from 'react';
 import { View, Text, FlatList, StyleSheet } from 'react-native';
-import axios from 'axios';
+import { fetchPratos } from '../../services/pratosService';
+import { Prato } from '../../models/prato';
+import styles from '../(styles)/listar.style';
 
 export default function HomeScreen() {
-  const [pratos, setPratos] = useState([]);
+  const [pratos, setPratos] = useState<Prato[]>([]);
   const [loading, setLoading] = useState(true);
   const [error, setError] = useState<string | null>(null);
 
   useEffect(() => {
-    const fetchPratos = async () => {
+    const loadPratos = async () => {
       try {
-        const response = await axios.get('https://localhost:7170/api/pratos');
-        setPratos(response.data);
+        const data = await fetchPratos();
+        setPratos(data);
       } catch (err: any) {
         setError(err.message);
       } finally {
@@ -19,7 +21,7 @@ export default function HomeScreen() {
       }
     };
 
-    fetchPratos();
+    loadPratos();
   }, []);
 
   if (loading) {
@@ -48,25 +50,4 @@ export default function HomeScreen() {
   );
 }
 
-const styles = StyleSheet.create({
-  container: {
-    flex: 1,
-    backgroundColor: '#fff',
-    alignItems: 'center',
-    justifyContent: 'center',
-    padding: 20,
-  },
-  title: {
-    fontSize: 24,
-    marginBottom: 20,
-  },
-  item: {
-    padding: 10,
-    borderBottomWidth: 1,
-    borderBottomColor: '#ccc',
-  },
-  name: {
-    fontSize: 18,
-    fontWeight: 'bold',
-  },
-});
+
